@@ -9,13 +9,18 @@
 #include <sourcemod>
 #include <sdktools>
 
+#define PLUGIN_VERSION          "0x02"
+
+#define TF_MAX_PLAYERS          34
+#define FCVAR_VERSION           FCVAR_NOTIFY|FCVAR_DONTRECORD|FCVAR_CHEAT
+
 public Plugin:myinfo =
 {
     name = "Fun Commands - Fakebomb",
     author = "AlliedModders LLC & Chdata",
     description = "Fun Commands - Fakebomb",
-    version = "0x01",
-    url = "http://www.sourcemod.net/"
+    version = PLUGIN_VERSION,
+    url = "http://steamcommunity.com/groups/tf2data"
 };
 
 new String:g_BeepSound[PLATFORM_MAX_PATH];
@@ -37,8 +42,8 @@ new g_Serial_Gen = 0;
 // Flags used in various timers
 #define DEFAULT_TIMER_FLAGS TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE
 
-new g_TimeBombSerial[MAXPLAYERS+1] = { 0, ... };
-new g_TimeBombTime[MAXPLAYERS+1] = { 0, ... };
+new g_TimeBombSerial[MAXPLAYERS + 1] = { 0, ... };
+new g_TimeBombTime[MAXPLAYERS + 1] = { 0, ... };
 
 new Handle:g_Cvar_TimeBombTicks = INVALID_HANDLE;
 new Handle:g_Cvar_TimeBombRadius = INVALID_HANDLE;
@@ -75,8 +80,9 @@ public OnPluginStart()
     {
         HookEvent("round_end", Event_RoundEnd, EventHookMode_PostNoCopy);
     }
-}
 
+    CreateConVar("cv_fakebomb_version", PLUGIN_VERSION, "Fakebomb Version", FCVAR_VERSION);
+}
 
 public OnMapStart()
 {
@@ -161,13 +167,13 @@ PerformTimeBomb(client, target)
     if (g_TimeBombSerial[target] == 0)
     {
         CreateTimeBomb(target);
-        LogAction(client, target, "\"%L\" set a TimeBomb on \"%L\"", client, target);
+        LogAction(client, target, "\"%L\" set a FakeBomb on \"%L\"", client, target);
     }
     else
     {
         KillTimeBomb(target);
         SetEntityRenderColor(client, 255, 255, 255, 255);
-        LogAction(client, target, "\"%L\" removed a TimeBomb on \"%L\"", client, target);
+        LogAction(client, target, "\"%L\" removed a FakeBomb on \"%L\"", client, target);
     }
 }
 
